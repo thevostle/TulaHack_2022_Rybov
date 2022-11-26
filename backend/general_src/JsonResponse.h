@@ -36,22 +36,16 @@ struct BaseResponse
 
 struct JsonResponse : public BaseResponse
 {
-    using Additional = std::unordered_map<std::string, std::string>;
-
-    static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg, Additional add = {})
+    static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg, Json::Value add = Json::objectValue)
     {
         JsonResponse res{ rybCode, std::move(msg), std::move(add) };
-        auto response = dr::HttpResponse::newHttpJsonResponse(std::move(res).toJson());
-        response->setStatusCode(dr::HttpStatusCode::k200OK);
-        response->addHeader("Access-Control-Allow-Origin", "*");
-        response->addHeader("Access-Control-Allow-Headers", "*");
-        return response;
+        return res.toResponse();
     }
 
     JsonResponse()
-        : message{}, rybCode(ErrorCode::OK), add{} {}
+        : message{}, rybCode(ErrorCode::OK), add{Json::objectValue} {}
 
-    JsonResponse(ErrorCode _rybCode, std::string _message, Additional _add = {})
+    JsonResponse(ErrorCode _rybCode, std::string _message, Json::Value _add = {})
         : message{std::move(_message)}, rybCode(_rybCode), add(std::move(_add)) {}
 
     JsonResponse(const JsonResponse&)            = default;
@@ -65,13 +59,7 @@ struct JsonResponse : public BaseResponse
         Json::Value json{};
         json["message"]    = message;
         json["rybCode"]    = rybCode;
-        json["additional"] = Json::objectValue;
-
-        for (auto &[k, v] : add)
-        {
-            json["additional"][k] = v;
-        }
-
+        json["additional"] = add;
         return json;
     }
 
@@ -80,28 +68,29 @@ struct JsonResponse : public BaseResponse
         Json::Value json{};
         json["message"]    = std::move(message);
         json["rybCode"]    = rybCode;
-        json["additional"] = Json::objectValue;
-
-        for (auto &[k, v] : add)
-        {
-            json["additional"][k] = std::move(v);
-        }
-
+        json["additional"] = std::move(add);
         return json;
     }
 
     dr::HttpResponsePtr toResponse() const & override
     {
-        return dr::HttpResponse::newHttpJsonResponse(toJson());
+        auto response = dr::HttpResponse::newHttpJsonResponse(toJson());
+        response->setStatusCode(dr::HttpStatusCode::k200OK);
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        response->addHeader("Access-Control-Allow-Headers", "*");
+        return response;
     }
 
     dr::HttpResponsePtr toResponse() && override
     {
-        return dr::HttpResponse::newHttpJsonResponse(toJson());
+        auto response = dr::HttpResponse::newHttpJsonResponse(toJson());
+        response->setStatusCode(dr::HttpStatusCode::k200OK);
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        response->addHeader("Access-Control-Allow-Headers", "*");
+        return response;
     }
 
-private:
-    Additional add;
+    Json::Value add;
     std::string message;
     ErrorCode rybCode;
 

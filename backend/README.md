@@ -9,6 +9,8 @@
 
 Note: Вместо ngrok.back.adress.io должен быть backend-адрес, выданный `ngrok` при прокидывании портов.
 
+## User Controller:
+
 ### Register user
 ```
 URL: http://ngrok.back.adress.io/user/register
@@ -19,7 +21,10 @@ Server response:
 {
     "rybCode": 0,
     "message": "message",
-    "additional": {}
+    "additional": {
+        "login": "login",
+        "id": 0
+    }
 }
 ```
 
@@ -29,11 +34,45 @@ URL: http://ngrok.back.adress.io/user/login
 POST: string login, integer password
 ```
 
+### Get user by ID
+```
+URL: http://ngrok.back.adress.io/user/get?id={1}
+GET: string id
+```
+
 Server response:
 ```json
 {
     "rybCode": 0,
     "message": "message",
-    "additional": {}
+    "additional": {
+        "login": "login"
+    }
+}
+```
+
+## Content Controller:
+
+### Fetch all movies
+```
+URL: http://ngrok.back.adress.io/content/fetch
+GET: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {
+        "movies": [
+            {
+                "id": 0,
+                "name": "name",
+                "rate": 0,
+                "poster_url": "url"
+            },
+        ]
+    }
 }
 ```
