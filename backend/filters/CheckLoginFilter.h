@@ -67,9 +67,8 @@ public:
             {
                 accept();
             }
-            
             decline(Error::Response(ErrorCode::WRONG_PASSWORD, dr::HttpStatusCode::k401Unauthorized,
-                                    "Wrong password or error in hashing occured"));
+                                     "Wrong password or error in hashing occured"));
         }
         catch (const orm::DrogonDbException &e)
         {

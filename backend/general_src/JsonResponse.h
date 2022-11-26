@@ -22,6 +22,7 @@ enum ErrorCode
     DB_CLIENT_ERROR = 7,
     UNREGISTERED_USER = 8,
     WRONG_PASSWORD = 9,
+    AUTORIZED = 10,
 };
 
 struct BaseResponse
@@ -59,13 +60,14 @@ public:
         JsonResponse err{rybCode, code, std::move(msg)};
         auto response = dr::HttpResponse::newHttpJsonResponse(std::move(err).toJson());
         response->setStatusCode(code);
+        response->addHeader("Referrer-Policy", "unsafe-url");
         return response;
     }
 
-    JsonResponse() 
+    JsonResponse()
         : message{}, code(dr::HttpStatusCode::k200OK), rybCode(ErrorCode::OK) {}
 
-    JsonResponse(ErrorCode _rybCode, dr::HttpStatusCode _code, std::string _message) 
+    JsonResponse(ErrorCode _rybCode, dr::HttpStatusCode _code, std::string _message)
         : message{std::move(_message)}, code(_code), rybCode(_rybCode) {}
 
     JsonResponse(const JsonResponse&)            = default;
