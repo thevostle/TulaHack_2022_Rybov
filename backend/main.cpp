@@ -1,10 +1,11 @@
 #include <drogon/HttpAppFramework.h>
 
+#include "CommonFilters.h"
 #include "TimeoutFilter.h"
 #include "CheckLoginFilter.h"
 
+#include "UserController.h"
 #include "RedirectController.h"
-#include "LoginController.h"
 
 namespace dr = drogon;
 

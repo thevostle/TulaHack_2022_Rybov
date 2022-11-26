@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.1.0)
 project(cpp-backend CXX)
 
 set(FILTER_FILES    CheckLoginFilter.h
-                    CheckLoginFilter.cpp
                     TimeoutFilter.h
-                    TimeoutFilter.cpp
+                    CommonFilters.h
     )
 
-set(HANDLER_FILES   LoginController.h
+set(HANDLER_FILES   UserController.h
+                    #UserController.cpp
                     RedirectController.h
                     RedirectController.cpp
     )

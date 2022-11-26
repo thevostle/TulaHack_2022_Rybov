@@ -12,11 +12,16 @@ enum ErrorCode
 {
     OK = 0,
     UNKNOWN = 1,
-    BAD_SESSION = 2,
     TIMEOUT = 3,
+
+    BAD_SESSION = 2,
     BAD_REQUEST = 4,
     INVALID_PARAMS = 5,
+
     SQL_ERROR = 6,
+    DB_CLIENT_ERROR = 7,
+    UNREGISTERED_USER = 8,
+    WRONG_PASSWORD = 9,
 };
 
 struct BaseResponse
@@ -52,7 +57,9 @@ public:
     static dr::HttpResponsePtr Response(ErrorCode rybCode, dr::HttpStatusCode code, std::string msg)
     {
         JsonResponse err{rybCode, code, std::move(msg)};
-        return dr::HttpResponse::newHttpJsonResponse(std::move(err).toJson());
+        auto response = dr::HttpResponse::newHttpJsonResponse(std::move(err).toJson());
+        response->setStatusCode(code);
+        return response;
     }
 
     JsonResponse() 
