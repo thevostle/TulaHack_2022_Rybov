@@ -51,10 +51,10 @@ private:
                 session->insert("auth_token", auth_token);
             }
 
-            auto add = JsonResponse::Additional{};
-            add.emplace("id", std::to_string(result[0]["id"].as<size_t>()));
-            add.emplace("login", login);
-            send(JsonResponse::Response(ErrorCode::OK, "User registered", std::move(add)));
+            JsonResponse res{ErrorCode::OK, "Returned registered user"};
+            res.add["id"] = std::to_string(result[0]["id"].as<size_t>());
+            res.add["login"] = login;
+            send(std::move(res).toResponse());
         }
         catch (const orm::DrogonDbException &e)
         {
@@ -109,10 +109,10 @@ private:
                     session->modify<size_t>("auth_token", [](auto &t){ t = 123123; });
                 }
 
-                auto add = JsonResponse::Additional{};
-                add.emplace("id", std::to_string(result[0]["id"].as<size_t>()));
-                add.emplace("login", login);
-                send(JsonResponse::Response(ErrorCode::OK, "Authorized", std::move(add)));
+                JsonResponse res{ErrorCode::OK, "Authorized"};
+                res.add["id"] = std::to_string(result[0]["id"].as<size_t>());
+                res.add["login"] = login;
+                send(std::move(res).toResponse());
                 return;
             }
             send(Error::Response(ErrorCode::WRONG_PASSWORD, "Wrong password or error in hashing occured"));
@@ -143,11 +143,11 @@ private:
                 return;
             }
 
-            auto additional = JsonResponse::Additional{};
             auto login = result[0]["login"].as<std::string>();
-            additional.emplace("login", std::move(login));
-            additional.emplace("id", std::to_string(id));
-            send(JsonResponse::Response(ErrorCode::OK, std::move(login), additional));
+            JsonResponse res{ErrorCode::OK, "Returned registered user with given ID"};
+            res.add["id"] = result[0]["id"].as<int>();
+            res.add["login"] = login;
+            send(std::move(res).toResponse());
         }
         catch (const orm::DrogonDbException &e)
         {
