@@ -1,7 +1,7 @@
 export default {
   data() {
     return {
-      apiUrl: 'http://1157-94-28-235-94.eu.ngrok.io/',
+      apiUrl: 'http://localhost:8080/',
     };
   },
   methods: {
@@ -14,9 +14,12 @@ export default {
 
       const options = {
         method: 'POST',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          //'Access-Control-Request-Private-Network': false,
         },
         body: payload,
       };
@@ -41,7 +44,12 @@ export default {
 
       const options = {
         method: 'GET',
-        mode: 'no-cors',
+        mode: 'cors',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          //'Access-Control-Request-Private-Network': false,
+        },
       };
 
       try {

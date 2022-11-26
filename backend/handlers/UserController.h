@@ -26,12 +26,6 @@ private:
     {
         static std::string salt {SALT};
 
-        if (std::string{req->getMethodString()} == "OPTIONS")
-        {
-            send(JsonResponse::Response(ErrorCode::OK, "OPTIONS PROTOCOL SUCKS!!!!!"));
-            return;
-        }
-
         const auto &params   = req->getParameters();
         const auto &login    = params.at("login");
         const auto &password = params.at("password");
@@ -46,20 +40,19 @@ private:
 
         try
         {
-            auto auth_token = std::hash<std::string>{}(login + salt + password);
-            auto pwdHash    = std::hash<std::string>{}(password + salt);
-            auto result     = client->execSqlSync("insert into users values (NULL, $0, $1, $2);",
-                                                  login, std::move(pwdHash), std::move(auth_token));
-                                                  
-            if (auto session = req->getSession())
+            auto auth_token  = std::hash<std::string>{}(login + salt + password);
+            auto pwdHash     = std::hash<std::string>{}(password + salt);
+            (void)client->execSqlSync("insert into users values (NULL, $0, $1);",
+                                      login, std::move(pwdHash));//, std::move(auth_token));
+            auto result = client->execSqlSync("select * from users where login=?1;", login);
+
+            if (auto session = req->session())
             {
                 session->insert("auth_token", auth_token);
             }
-            
-            auto resultLogin = client->execSqlSync("select * from users where login=?1;", login);
 
             auto add = JsonResponse::Additional{};
-            add.emplace("id", std::to_string(resultLogin[0]["id"].as<size_t>()));
+            add.emplace("id", std::to_string(result[0]["id"].as<size_t>()));
             add.emplace("login", login);
             send(JsonResponse::Response(ErrorCode::OK, "User registered", std::move(add)));
         }

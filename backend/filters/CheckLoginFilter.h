@@ -24,7 +24,7 @@ public:
     {
         static std::string salt {"TulaHack2022Accelerator"};
 
-        if (auto &session = req->getSession())
+        if (auto session = req->session())
         {
             if (session->find("auth_token"))
             {
