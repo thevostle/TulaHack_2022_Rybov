@@ -26,8 +26,7 @@ public:
 
         if (params.empty() || !(params.contains("login") && params.contains("password")))
         {
-            decline(Error::Response(ErrorCode::BAD_REQUEST, dr::HttpStatusCode::k400BadRequest,
-                                    "Login and password are missing"));
+            decline(Error::Response(ErrorCode::BAD_REQUEST, "Login and password are missing"));
             return;
         }
 
@@ -37,8 +36,7 @@ public:
         if (   login.empty() || password.empty() 
             || login.size() < loginMinSize || password.size() < passwordMinSize)
         {
-            decline(Error::Response(ErrorCode::INVALID_PARAMS, dr::HttpStatusCode::k400BadRequest,
-                                    "Login and password are invalid"));
+            decline(Error::Response(ErrorCode::INVALID_PARAMS, "Login and password are invalid"));
             return;
         }
 

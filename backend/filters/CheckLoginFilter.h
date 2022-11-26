@@ -34,8 +34,7 @@ public:
 
         if (!client)
         {
-            decline(Error::Response(ErrorCode::DB_CLIENT_ERROR, dr::HttpStatusCode::k500InternalServerError,
-                                    "No client found"));
+            decline(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
             return;
         }
 
@@ -45,8 +44,7 @@ public:
 
             if (result.size() < 1)
             {
-                decline(Error::Response(ErrorCode::UNREGISTERED_USER, dr::HttpStatusCode::k403Forbidden,
-                                        "User not registered"));
+                decline(Error::Response(ErrorCode::UNREGISTERED_USER, "User not registered"));
                 return;
             } 
             else if (result.size() > 1)
@@ -56,8 +54,7 @@ public:
                 {
                     ids += row.at("id").as<std::string>();
                 }
-                decline(Error::Response(ErrorCode::UNKNOWN, dr::HttpStatusCode::k500InternalServerError,
-                                        "[CRITICAL] Several users with same login: " + ids));
+                decline(Error::Response(ErrorCode::UNKNOWN, "[CRITICAL] Several users with same login: " + ids));
                 return;
             }
 
@@ -67,13 +64,11 @@ public:
             {
                 accept();
             }
-            decline(Error::Response(ErrorCode::WRONG_PASSWORD, dr::HttpStatusCode::k401Unauthorized,
-                                     "Wrong password or error in hashing occured"));
+            decline(Error::Response(ErrorCode::WRONG_PASSWORD, "Wrong password or error in hashing occured"));
         }
         catch (const orm::DrogonDbException &e)
         {
-            decline(Error::Response(ErrorCode::SQL_ERROR, dr::HttpStatusCode::k500InternalServerError,
-                                    "Exception while accesing to database: " + std::string{e.base().what()}));
+            decline(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
         }
     }
 };

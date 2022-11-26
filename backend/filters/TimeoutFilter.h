@@ -44,7 +44,7 @@ public:
                 else
                 {
                     auto msg = "Access interval should be at least " + std::to_string(timeout.count()) + " milliseconds";
-                    decline(Error::Response(ErrorCode::TIMEOUT, dr::HttpStatusCode::k429TooManyRequests, std::move(msg)));
+                    decline(Error::Response(ErrorCode::TIMEOUT, std::move(msg)));
                     return;
                 }
             }
@@ -54,6 +54,6 @@ public:
             return;
         }
 
-        decline(Error::Response(ErrorCode::TIMEOUT, dr::HttpStatusCode::k429TooManyRequests, "[CRITICAL] Session not found."));
+        decline(Error::Response(ErrorCode::TIMEOUT, "[CRITICAL] Session not found."));
     }
 };

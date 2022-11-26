@@ -38,7 +38,6 @@ private:
     {
         Json::Value json{};
         json["message"]    = message;
-        json["code"]       = code;
         json["rybCode"]    = rybCode;
         json["additional"] = Json::objectValue;
         return json;
@@ -48,27 +47,27 @@ private:
     {
         Json::Value json{};
         json["message"]    = std::move(message);
-        json["code"]       = code;
         json["rybCode"]    = rybCode;
         json["additional"] = Json::objectValue;
         return json;
     }
 
 public:
-    static dr::HttpResponsePtr Response(ErrorCode rybCode, dr::HttpStatusCode code, std::string msg)
+    static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg)
     {
-        JsonResponse err{rybCode, code, std::move(msg)};
+        JsonResponse err{rybCode, std::move(msg)};
         auto response = dr::HttpResponse::newHttpJsonResponse(std::move(err).toJson());
-        response->setStatusCode(code);
-        response->addHeader("Referrer-Policy", "unsafe-url");
+        response->setStatusCode(dr::HttpStatusCode::k200OK);
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        response->addHeader("Access-Control-Allow-Headers", "*");
         return response;
     }
 
     JsonResponse()
-        : message{}, code(dr::HttpStatusCode::k200OK), rybCode(ErrorCode::OK) {}
+        : message{}, rybCode(ErrorCode::OK) {}
 
-    JsonResponse(ErrorCode _rybCode, dr::HttpStatusCode _code, std::string _message)
-        : message{std::move(_message)}, code(_code), rybCode(_rybCode) {}
+    JsonResponse(ErrorCode _rybCode, std::string _message)
+        : message{std::move(_message)}, rybCode(_rybCode) {}
 
     JsonResponse(const JsonResponse&)            = default;
     JsonResponse(JsonResponse&&)                 = default;
@@ -87,6 +86,5 @@ public:
     }
 
     std::string message;
-    dr::HttpStatusCode code;
     ErrorCode rybCode;
 };

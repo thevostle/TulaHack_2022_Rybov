@@ -19,7 +19,7 @@ private:
 
     void acceptRequest(const Request &req, Callback &&send)
     {
-        send(JsonResponse::Response(ErrorCode::AUTORIZED, dr::HttpStatusCode::k200OK, "Authorized"));
+        send(JsonResponse::Response(ErrorCode::AUTORIZED, "Authorized"));
     }
 
     void registerUser(const Request &req, Callback &&send)
@@ -36,26 +36,18 @@ private:
 
         if (!client)
         {
-            send(Error::Response(ErrorCode::DB_CLIENT_ERROR, dr::HttpStatusCode::k500InternalServerError,
-                                    "No client found"));
+            send(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
         }
 
         try
         {
-            auto result = client->execSqlSync("insert into users values (NULL, ?1, ?2);", login, std::hash<std::string>{}(password + salt));
+            auto result = client->execSqlSync("insert into users values (NULL, $0, $1);", login, std::hash<std::string>{}(password + salt));
 
-            if (result.affectedRows() != 1)
-            {
-                send(Error::Response(ErrorCode::SQL_ERROR, dr::HttpStatusCode::k500InternalServerError,
-                                     "No rows were inserted"));
-            }
-
-            send(JsonResponse::Response(ErrorCode::OK, dr::HttpStatusCode::k200OK, "User registered"));
+            send(JsonResponse::Response(ErrorCode::OK, "User registered"));
         }
         catch (const orm::DrogonDbException &e)
         {
-            send(Error::Response(ErrorCode::SQL_ERROR, dr::HttpStatusCode::k500InternalServerError,
-                                    "Exception while accesing to database: " + std::string{e.base().what()}));
+            send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
         }
     }
     
@@ -69,10 +61,10 @@ public:
 
     METHOD_LIST_BEGIN
 
-    ADD_METHOD_TO(UserController::registerUser, "/user/register", dr::Post,
+    ADD_METHOD_TO(UserController::registerUser, "/user/register", dr::Post, dr::Options,
                   "TimeoutFilter", "CheckLoginVars");
 
-    ADD_METHOD_TO(UserController::acceptRequest, "/user/login", dr::Post,
+    ADD_METHOD_TO(UserController::acceptRequest, "/user/login", dr::Post, dr::Options,
                   "TimeoutFilter", "CheckLoginVars", "CheckLoginFilter");
 
     METHOD_LIST_END
