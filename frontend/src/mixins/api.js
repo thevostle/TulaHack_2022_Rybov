@@ -1,7 +1,7 @@
 export default {
   data() {
     return {
-      apiUrl: 'https://0e44-94-28-235-94.eu.ngrok.io/',
+      apiUrl: 'https://92f6-94-28-235-94.eu.ngrok.io/',
     };
   },
   methods: {
@@ -20,6 +20,7 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Request-Private-Network': false,
+          credentials: 'include',
         },
         body: payload,
       };
@@ -49,6 +50,7 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Request-Private-Network': false,
+          credentials: 'include',
         },
       };
 

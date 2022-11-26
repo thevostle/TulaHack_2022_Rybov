@@ -31,8 +31,8 @@ import Aside from '../components/layout/Aside.vue';
               </td>
               <td>
                 <div
-                  class="deleteFilm"
-                  @click="deleteFilm(item.id)">
+                  class="deleteMovie"
+                  @click="deleteMovie(item.id)">
                   x
                 </div>
               </td>
@@ -93,7 +93,7 @@ export default {
       ],
     };
   },
-  mounted() {
+  updated() {
     this.getUser();
   },
   methods: {
@@ -102,7 +102,7 @@ export default {
       const userData = await this.apiGet('user/get', { id: this.userId });
       this.login = this.userId; // userData.login
     },
-    deleteFilm(id) {
+    deleteMovie(id) {
       this.movies = this.movies.filter(function (obj) {
         return obj.id !== id;
       });
@@ -111,12 +111,7 @@ export default {
     },
     // отправить результат на сервер
     async saveMovies() {
-      this.api.apiPost(`movies/set/${this.userId}`, this.movies)
-    },
-  },
-  methods: {
-    mounted() {
-      // запрашиваем фильмы с сервера и закидываем в this.movies. данные: id, title, link, rating
+      await this.apiPost(`movies/set/${this.userId}`, this.movies)
     },
   },
 };
@@ -127,7 +122,7 @@ export default {
   max-width: 120rem;
 }
 
-.deleteFilm {
+.deleteMovie {
   cursor: pointer;
   &:hover {
     color: orange;

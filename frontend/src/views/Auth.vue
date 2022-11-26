@@ -106,10 +106,12 @@ export default {
       const authData = await this.apiPost(this.isLogin ? 'user/login' : 'user/register', { login: this.login, password: this.password });
       console.log(authData);
 
-      const isAuthorized = await this.apiGet('user/is_auth');
-      console.log('isAuthorized', isAuthorized);
+      // setTimeout(async () => {
+      //   const isAuthorized = await this.apiGet('user/is_auth');
+      //   console.log('isAuthorized', isAuthorized);
+      // }, 2000);
 
-      if (authData) {
+      if (authData.rybCode === 0) {
         this.$router.push('/');
       }
     },
