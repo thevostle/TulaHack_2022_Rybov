@@ -7,16 +7,33 @@
 
 ## API
 
-### Note: Вместо ngrok.example.adress.io должен быть фронтенд-адрес, выданный `ngrok` при прокидывании портов.
+Note: Вместо ngrok.back.adress.io должен быть backend-адрес, выданный `ngrok` при прокидывании портов.
 
-Register user
+### Register user
 ```
-URL: http://ngrok.example.adress.io/user/register
-POST: login:string, password:integer
+URL: http://ngrok.back.adress.io/user/register
+POST: string login, integer password
+```
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
+}
 ```
 
-Authentification
+### Authentification
 ```
-URL: http://ngrok.example.adress.io/user/login
-POST: login:string, password:integer
+URL: http://ngrok.back.adress.io/user/login
+POST: string login, integer password
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
+}
 ```
