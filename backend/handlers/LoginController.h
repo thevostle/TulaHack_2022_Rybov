@@ -4,6 +4,7 @@
 #include "Error.h"
 
 #include <drogon/HttpController.h>
+#include <string>
 
 namespace dr = drogon;
 
@@ -22,17 +23,17 @@ public:
         if (params.empty() || !(params.contains("login") && params.contains("password")))
         {
             send(Error::Response(ErrorCode::BAD_REQUEST, dr::HttpStatusCode::k400BadRequest,
-                                "Parameters are missing"));
+                                "Login and password are missing"));
             return;
         }
 
         const auto &login    = params.at("login");
         const auto &password = params.at("password");
 
-        if (login.empty() || password.empty())
+        if (login.empty() || password.empty() || login.size() < 6 || password.size() < 6)
         {
             send(Error::Response(ErrorCode::INVALID_PARAMS, dr::HttpStatusCode::k400BadRequest,
-                                "Parameters are invalid"));
+                                "Login and password are invalid"));
             return;
         }
 
@@ -40,7 +41,7 @@ public:
 
         try
         {
-            (void)client->execSqlSync("insert into users values (NULL, ?1, ?2);", login, password);
+            (void)client->execSqlSync("insert into users values (NULL, ?1, ?2);", login, std::hash<std::string>{}(password));
         }
         catch (const orm::DrogonDbException &e)
         {
