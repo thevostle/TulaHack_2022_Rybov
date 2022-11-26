@@ -2,24 +2,22 @@
 
 #include <drogon/HttpSimpleController.h>
 
-#include "Error.h"
-
 namespace dr = drogon;
 
-class RedirectController : public dr::HttpSimpleController<RedirectController>
+class AuthRedirectController : public dr::HttpSimpleController<AuthRedirectController>
 {
 private:
     using Callback = std::function<void (const dr::HttpResponsePtr &)>;
     using Request  = dr::HttpRequestPtr;
 
 public:
-    RedirectController() {}
+    AuthRedirectController() {}
 
     void asyncHandleHttpRequest(const Request &req, Callback &&callback) override;
 
     PATH_LIST_BEGIN
-
-    //PATH_ADD("/");
+    
+    //PATH_ADD("/", "TimeoutFilter");
 
     PATH_LIST_END
 };

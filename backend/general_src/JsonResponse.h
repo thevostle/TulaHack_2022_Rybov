@@ -6,6 +6,8 @@
 #include <drogon/HttpTypes.h>
 #include <drogon/HttpResponse.h>
 
+#define SALT "TulaHack2022Accelerator"
+
 namespace dr = drogon;
 
 enum ErrorCode
@@ -17,46 +19,29 @@ enum ErrorCode
     BAD_SESSION = 2,
     BAD_REQUEST = 4,
     INVALID_PARAMS = 5,
+    UNAUTHORIZED = 11,
 
     SQL_ERROR = 6,
     DB_CLIENT_ERROR = 7,
     UNREGISTERED_USER = 8,
     WRONG_PASSWORD = 9,
-    AUTORIZED = 10,
+    USER_NOT_FOUND = 10,
 };
 
 struct BaseResponse
 {
-    virtual Json::Value toJson()                const = 0;
-    virtual dr::HttpResponsePtr toResponse()    const = 0;
+    virtual dr::HttpResponsePtr toResponse() const & = 0;
+    virtual dr::HttpResponsePtr toResponse() && = 0;
 };
 
 struct JsonResponse : public BaseResponse
 {
-private:
-    Json::Value _json() const &
-    {
-        Json::Value json{};
-        json["message"]    = message;
-        json["rybCode"]    = rybCode;
-        json["additional"] = Json::objectValue;
-        return json;
-    }
+    using Additional = std::unordered_map<std::string, std::string>;
 
-    Json::Value _json() && 
+    static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg, Additional add = {})
     {
-        Json::Value json{};
-        json["message"]    = std::move(message);
-        json["rybCode"]    = rybCode;
-        json["additional"] = Json::objectValue;
-        return json;
-    }
-
-public:
-    static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg)
-    {
-        JsonResponse err{rybCode, std::move(msg)};
-        auto response = dr::HttpResponse::newHttpJsonResponse(std::move(err).toJson());
+        JsonResponse res{ rybCode, std::move(msg), std::move(add) };
+        auto response = dr::HttpResponse::newHttpJsonResponse(std::move(res).toJson());
         response->setStatusCode(dr::HttpStatusCode::k200OK);
         response->addHeader("Access-Control-Allow-Origin", "*");
         response->addHeader("Access-Control-Allow-Headers", "*");
@@ -64,10 +49,10 @@ public:
     }
 
     JsonResponse()
-        : message{}, rybCode(ErrorCode::OK) {}
+        : message{}, rybCode(ErrorCode::OK), add{} {}
 
-    JsonResponse(ErrorCode _rybCode, std::string _message)
-        : message{std::move(_message)}, rybCode(_rybCode) {}
+    JsonResponse(ErrorCode _rybCode, std::string _message, Additional _add = {})
+        : message{std::move(_message)}, rybCode(_rybCode), add(std::move(_add)) {}
 
     JsonResponse(const JsonResponse&)            = default;
     JsonResponse(JsonResponse&&)                 = default;
@@ -75,16 +60,92 @@ public:
     JsonResponse& operator=(JsonResponse&&)      = default;
     ~JsonResponse()                              = default;
 
-    Json::Value toJson() const override 
+    virtual Json::Value toJson() const &
     {
-        return _json();
+        Json::Value json{};
+        json["message"]    = message;
+        json["rybCode"]    = rybCode;
+        json["additional"] = Json::objectValue;
+
+        for (auto &[k, v] : add)
+        {
+            json["additional"][k] = v;
+        }
+
+        return json;
     }
 
-    dr::HttpResponsePtr toResponse() const override
+    virtual Json::Value toJson() &&
+    {
+        Json::Value json{};
+        json["message"]    = std::move(message);
+        json["rybCode"]    = rybCode;
+        json["additional"] = Json::objectValue;
+
+        for (auto &[k, v] : add)
+        {
+            json["additional"][k] = std::move(v);
+        }
+
+        return json;
+    }
+
+    dr::HttpResponsePtr toResponse() const & override
     {
         return dr::HttpResponse::newHttpJsonResponse(toJson());
     }
 
+    dr::HttpResponsePtr toResponse() && override
+    {
+        return dr::HttpResponse::newHttpJsonResponse(toJson());
+    }
+
+private:
+    Additional add;
     std::string message;
     ErrorCode rybCode;
+
+};
+
+namespace tags
+{
+    struct FullUrlTag{};
+}
+
+struct RedirectResponse : public BaseResponse
+{
+public:
+    static dr::HttpResponsePtr Response(const std::string &url, bool redirectToFrontend = false)
+    {
+        static std::string frontUrl{ "https://c20e-94-28-235-94.eu.ngrok.io" };
+        static std::string backUrl { "https://0e44-94-28-235-94.eu.ngrok.io" };
+        return dr::HttpResponse::newRedirectionResponse((redirectToFrontend ? frontUrl : backUrl) + url);
+    }
+
+    static dr::HttpResponsePtr Response(std::string url, tags::FullUrlTag)
+    {
+        return dr::HttpResponse::newRedirectionResponse(std::move(url));
+    }
+
+    RedirectResponse(std::string_view _url)
+        : url(_url) {}
+
+    RedirectResponse(const RedirectResponse&)            = default;
+    RedirectResponse(RedirectResponse&&)                 = default;
+    RedirectResponse& operator=(const RedirectResponse&) = default;
+    RedirectResponse& operator=(RedirectResponse&&)      = default;
+    ~RedirectResponse()                                  = default;
+
+    dr::HttpResponsePtr toResponse() const & override
+    {
+        return dr::HttpResponse::newHttpJsonResponse(url);
+    }
+
+    dr::HttpResponsePtr toResponse() && override
+    {
+        return dr::HttpResponse::newHttpJsonResponse(std::move(url));
+    }
+
+private:
+    std::string url;
 };

@@ -1,6 +1,7 @@
 #include "RedirectController.h"
+#include "JsonResponse.h"
 
-void RedirectController::asyncHandleHttpRequest(const Request &req, Callback &&callback)
+void AuthRedirectController::asyncHandleHttpRequest(const Request &req, Callback &&callback)
 {
-    callback(dr::HttpResponse::newRedirectionResponse("/index.php"));
+    callback(RedirectResponse::Response("/auth", true));
 }
