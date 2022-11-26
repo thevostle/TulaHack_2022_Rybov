@@ -112,6 +112,7 @@ export default {
       // }, 2000);
 
       if (authData.rybCode === 0) {
+				document.cookie=`id=${authData.additional.id};max-age=${60*60*24}` 
         this.$router.push('/');
       }
     },

@@ -48,12 +48,11 @@ export default {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
-          'Access-Control-Request-Private-Network': false,
         },
       };
 
       try {
-        const response = await fetch(`${this.apiUrl}${action}?${payload}`, options);
+        const response = await fetch(`${this.apiUrl}${action}`, options);
 
         if (response.ok) {
           const data = await response.json();
