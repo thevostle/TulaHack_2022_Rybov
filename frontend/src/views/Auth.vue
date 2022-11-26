@@ -92,17 +92,26 @@ export default {
 			this.isRemember = !this.isRemember;
 		},
 		async sendData() {
-			const apiUrl = 'https://72e1-94-28-235-94.eu.ngrok.io/';
-			const action = 'users/login';
+			const apiUrl = 'https://989d-94-28-235-94.eu.ngrok.io/';
+			const action = this.isLogin ? 'user/login' : 'user/register';
 
 			const requestOptions = {
 				method: 'POST',
+				mode: 'cors',
+				referrerPolicy: 'unsafe-url',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ login: 'testUser', password: 'testPassword' }),
+				body: JSON.stringify({ login: this.username, password: this.password }),
 			};
-			const response = await fetch(`${apiUrl}${action}`, requestOptions);
-			const data = await response.json();
-			console.log(data);
+			try {
+				const response = await fetch(`${apiUrl}${action}`, requestOptions);
+
+				if (response.ok) {
+					const data = await response.json();
+					console.log(data);
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };
