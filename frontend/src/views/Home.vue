@@ -11,8 +11,8 @@ export default {
 </script>
 
 <template>
-	<main>
+	<div>
 		<HomeAside />
 		<Browser />
-	</main>
+	</div>
 </template>
