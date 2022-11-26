@@ -1,5 +1,6 @@
 #pragma once
 
+#include "drogon/utils/FunctionTraits.h"
 #include <jsoncpp/json/value.h>
 #include <string>
 #include <drogon/HttpTypes.h>
@@ -18,7 +19,13 @@ enum ErrorCode
     SQL_ERROR = 6,
 };
 
-struct JsonResponse
+struct BaseResponse
+{
+    virtual Json::Value toJson()                const = 0;
+    virtual dr::HttpResponsePtr toResponse()    const = 0;
+};
+
+struct JsonResponse : public BaseResponse
 {
 private:
     Json::Value _json() const &
@@ -60,9 +67,14 @@ public:
     JsonResponse& operator=(JsonResponse&&)      = default;
     ~JsonResponse()                              = default;
 
-    virtual Json::Value toJson() const
+    Json::Value toJson() const override 
     {
         return _json();
+    }
+
+    dr::HttpResponsePtr toResponse() const override
+    {
+        return dr::HttpResponse::newHttpJsonResponse(toJson());
     }
 
     std::string message;
