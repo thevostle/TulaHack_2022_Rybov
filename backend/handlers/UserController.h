@@ -42,7 +42,7 @@ private:
         {
             auto auth_token  = std::hash<std::string>{}(login + salt + password);
             auto pwdHash     = std::hash<std::string>{}(password + salt);
-            (void)client->execSqlSync("insert into users values (NULL, $0, $1);",
+            (void)client->execSqlSync("insert into users values (NULL, $0, $1, FALSE);",
                                       login, std::move(pwdHash));//, std::move(auth_token));
             auto result = client->execSqlSync("select * from users where login=?1;", login);
 
