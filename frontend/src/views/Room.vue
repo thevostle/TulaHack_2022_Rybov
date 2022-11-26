@@ -1,9 +1,23 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import Aside from '../components/layout/Aside.vue';
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div>
+    <Aside />
+    Комната №{{ roomId }}
+  </div>
 </template>
+
+<script>
+export default {
+  components: {
+    Aside,
+  },
+  data() {
+    return {
+      roomId: this.$route.params.roomId,
+    };
+  },
+};
+</script>

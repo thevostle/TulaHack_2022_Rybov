@@ -1,18 +1,20 @@
-<script>
-import HomeAside from '../components/layout/HomeAside.vue';
+<script setup>
+import Aside from '../components/layout/Aside.vue';
 import Browser from '../components/layout/Browser.vue';
-
-export default {
-	components: {
-		HomeAside,
-		Browser,
-	},
-};
 </script>
 
 <template>
-	<div>
-		<HomeAside />
-		<Browser />
-	</div>
+  <div>
+    <Aside />
+    <Browser />
+  </div>
 </template>
+
+<script>
+export default {
+  components: {
+    Aside,
+    Browser,
+  },
+};
+</script>
