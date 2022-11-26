@@ -19,8 +19,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
-          'Access-Control-Request-Private-Network': false,
-          credentials: 'include',
+          'Access-Control-Request-Private-Network': false
         },
         body: payload,
       };
@@ -50,7 +49,6 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Request-Private-Network': false,
-          credentials: 'include',
         },
       };
 

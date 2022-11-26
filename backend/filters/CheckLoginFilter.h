@@ -22,53 +22,17 @@ public:
     void doFilter(const dr::HttpRequestPtr &req, dr::FilterCallback &&decline, 
                   dr::FilterChainCallback &&accept) override
     {
-        namespace orm = dr::orm;
+        static std::string salt {"TulaHack2022Accelerator"};
 
-        static std::string salt {"ImATeapotInTulaHack2022Accelerator"};
-
-        const auto &params   = req->getParameters();
-        const auto &login    = params.at("login");
-        const auto &password = params.at("password");
-
-        auto client = dr::app().getDbClient("user");
-
-        if (!client)
+        if (auto session = req->session())
         {
-            decline(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
-            return;
-        }
-
-        try
-        {
-            auto result = client->execSqlSync("select * from users where login=?1;", login);
-
-            if (result.size() < 1)
+            if (session->find("auth_token"))
             {
-                decline(Error::Response(ErrorCode::UNREGISTERED_USER, "User not registered"));
-                return;
-            } 
-            else if (result.size() > 1)
-            {
-                std::string ids{};
-                for (auto &row : result)
-                {
-                    ids += row.at("id").as<std::string>();
-                }
-                decline(Error::Response(ErrorCode::UNKNOWN, "[CRITICAL] Several users with same login: " + ids));
-                return;
-            }
-
-            auto dbPwdHash = result[0]["password"].as<size_t>();
-
-            if (dbPwdHash == std::hash<std::string>{}(password + salt))
-            {
+                // Тактический костыль, полностью механизм токенов реализовать не успеем
                 accept();
             }
-            decline(Error::Response(ErrorCode::WRONG_PASSWORD, "Wrong password or error in hashing occured"));
         }
-        catch (const orm::DrogonDbException &e)
-        {
-            decline(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
-        }
+
+        decline(JsonResponse::Response(ErrorCode::UNAUTHORIZED, "Unauthorized"));
     }
 };
