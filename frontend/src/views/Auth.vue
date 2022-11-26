@@ -92,26 +92,34 @@ export default {
 			this.isRemember = !this.isRemember;
 		},
 		async sendData() {
-			const apiUrl = 'https://989d-94-28-235-94.eu.ngrok.io/';
-			const action = this.isLogin ? 'user/login' : 'user/register';
+			const apiUrl = 'https://0e44-94-28-235-94.eu.ngrok.io/';
+            const action = this.isLogin ? 'user/login' : 'user/register';
+            const payload = new URLSearchParams();
+            payload.append('login', this.username);
+            payload.append('password', this.password);
 
-			const requestOptions = {
+            const requestOptions = {
 				method: 'POST',
 				mode: 'cors',
-				referrerPolicy: 'unsafe-url',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ login: this.username, password: this.password }),
+				headers: { 
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Request-Private-Network': false
+				},
+				body: payload,
 			};
-			try {
-				const response = await fetch(`${apiUrl}${action}`, requestOptions);
+			
+            try {
+                const response = await fetch(`${apiUrl}${action}`, requestOptions);
 
-				if (response.ok) {
-					const data = await response.json();
-					console.log(data);
-				}
-			} catch (error) {
-				console.log(error);
-			}
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
 		},
 	},
 };
