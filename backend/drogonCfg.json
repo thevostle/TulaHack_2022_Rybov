@@ -7,16 +7,16 @@
         }
     ],
     "app": {
-      "number_of_threads": 6
+      "number_of_threads": 8
     },
     "db_clients":[
         {
-          "name":"first",
+          "name":"client",
           "rdbms": "sqlite3",
           "dbname": "",
           "is_fast": false,
-          "connection_number": 2,
-          "filename": ""
+          "connection_number": 4,
+          "filename": "data/users_info.db"
         }
       ]
 }
