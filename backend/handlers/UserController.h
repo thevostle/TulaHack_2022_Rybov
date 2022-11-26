@@ -42,7 +42,6 @@ private:
         try
         {
             auto result = client->execSqlSync("insert into users values (NULL, $0, $1);", login, std::hash<std::string>{}(password + salt));
-
             send(JsonResponse::Response(ErrorCode::OK, "User registered"));
         }
         catch (const orm::DrogonDbException &e)
