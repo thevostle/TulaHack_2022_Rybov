@@ -119,11 +119,6 @@ export default {
     async saveMovies() {
       await this.apiPost(`movies/set/${this.userId}`, this.movies)
     },
-    // взять вообще все фильмы
-    async getMovies() {
-      const response = await this.apiPost('content/fetch');
-      this.allMovies = response.additional.movies;
-    },
   },
   computed: {
     getMoviesLenght() {
@@ -133,8 +128,7 @@ export default {
   mounted() {
     this.getUser();
 
-    this.getMovies()
-    this.movies = this.apiGet(`/user/${this.userId}/rates/fetch`)
+    this.movies = this.apiPost(`/user/${this.userId}/rates/fetch`)
 
     
 
