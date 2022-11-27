@@ -1,5 +1,6 @@
 <script setup>
 import api from '../../mixins/api.js';
+import { RouterLink } from 'vue-router';
 </script>
 
 <template>
@@ -11,15 +12,17 @@ import api from '../../mixins/api.js';
           class="movieCard popularMovie"
           v-for="(movie, index) in popularMovies"
           :key="index">
-          <img
-            :src="movie.poster_url"
-            class="movieCard__cover" />
-          <div class="movieCard__rateBar">{{ Math.round(movie.rate * 10) / 10 }}</div>
-          <div class="movieCard__footer">
-            <span class="movieCard__name">{{ movie.name.length > 16 ? `${movie.name.slice(0, 16)}...` : movie.name }}</span>
-            &nbsp;
-            <span class="movieCard__year">({{ movie.year }})</span>
-          </div>
+          <RouterLink :to="`/movie/${movie.id}`">
+            <img
+              :src="movie.poster_url"
+              class="movieCard__cover" />
+            <div class="movieCard__rateBar">{{ Math.round(movie.rate * 10) / 10 }}</div>
+            <div class="movieCard__footer">
+              <span class="movieCard__name">{{ movie.name.length > 16 ? `${movie.name.slice(0, 16)}...` : movie.name }}</span>
+              &nbsp;
+              <span class="movieCard__year">({{ movie.year }})</span>
+            </div>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -30,6 +33,7 @@ import api from '../../mixins/api.js';
 <script>
 export default {
   mixins: [api],
+  components: [RouterLink],
   data() {
     return {
       popularMovies: [],

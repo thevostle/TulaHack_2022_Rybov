@@ -30,6 +30,11 @@ const router = createRouter({
 			name: 'Room creation',
 			component: () => import('../views/NewRoom.vue'),
 		},
+		{
+			path: '/movie/:movieId',
+			name: 'Movie page',
+			component: () => import('../views/MovieDetail.vue'),
+		},
 	],
 });
 
