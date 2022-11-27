@@ -8,13 +8,21 @@
 			<v-divider></v-divider>
 
 			<v-list :lines="false" density="compact" nav>
-				<div class="navLinkWrapper" v-for="(item, i) in navLinks" :key="i">
-					<router-link class="navLink" :to="item.link">
-						<v-list-item :value="item" active-color="primary">
+				<div class="navLinkWrapper">
+					<router-link class="navLink" to="/">
+						<v-list-item active-color="primary">
 							<template v-slot:prepend>
-								<v-icon :icon="item.icon"></v-icon>
+								<v-icon icon="mdi-folder"></v-icon>
 							</template>
-							{{ item.text }}
+							Главная
+						</v-list-item>
+					</router-link>
+					<router-link class="navLink" :to="getLinkToProfile">
+						<v-list-item active-color="primary">
+							<template v-slot:prepend>
+								<v-icon icon="mdi-account-multiple"></v-icon>
+							</template>
+							Мой список
 						</v-list-item>
 					</router-link>
 				</div>
@@ -72,28 +80,22 @@
 
 <script>
 import image from '../../assets/images/users/pochita_v_tazike.png';
-import PopupChooseGenres from '../Popups/PopupChooseGenres.vue'
+import PopupChooseGenres from '../Popups/PopupChooseGenres.vue';
 
+import api from '../../mixins/api.js';
 import cookie from '../../mixins/cookie.js';
 
 export default {
 	name: 'HomeAside',
 	components: {
-		PopupChooseGenres
+		PopupChooseGenres,
 	},
-	mixins: [cookie],
+	mixins: [api, cookie],
 	data() {
 		return {
-			username: 'thevostle',
-			items: [
-				{ title: 'Home', icon: 'mdi-home-city' },
-				{ title: 'My Account', icon: 'mdi-account' },
-				{ title: 'Users', icon: 'mdi-account-group-outline' },
-			],
-			navLinks: [
-				{ text: 'Главная', icon: 'mdi-folder', link: '/' },
-				{ text: 'Мой список', icon: 'mdi-account-multiple', link: '/createRoom' },
-			],
+			username: '',
+			userId: 0,
+
 			userGroup: [],
 			image: image,
 
@@ -129,17 +131,24 @@ export default {
 		},
 		closeInputNewUser() {
 			if (this.showInputNewUser) {
-				this.showInputNewUser = false
-				this.input_newUser = ''
+				this.showInputNewUser = false;
+				this.input_newUser = '';
 			}
+		},
+		async getUser() {
+			const userData = await this.apiPost('user/get/by_id', { id: this.userId });
+			this.username = userData.additional.login;
+			this.userGroup.push({ name: this.username });
 		},
 	},
 	mounted() {
-		this.userGroup.push({ name: this.username });
-		this.userId = this.getCookie('id')
-
-		//дебаг
-		//this.userGroup.push({name: 'mounted: test1'})
+		this.userId = this.getCookie('id');
+		this.getUser()
+	},
+	computed: {
+		getLinkToProfile() {
+			return `/user/${this.userId}`;
+		},
 	},
 };
 </script>
