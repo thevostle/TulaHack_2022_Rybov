@@ -75,8 +75,9 @@ Server response:
             {
                 "id": 0,
                 "name": "name",
-                "rate": 0,
-                "poster_url": "url"
+                "rate": 0.000,
+                "poster_url": "url",
+                "year": 0
             },
         ]
     }
