@@ -5,16 +5,16 @@ import api from '../../mixins/api.js';
 <template>
   <main class="browser">
     <section class="popular">
-      <h2>Популярно сейчас</h2>
+      <h2 class="subTitle">Популярно сейчас</h2>
       <div class="movieCards popularWrap">
         <div
           class="movieCard popularMovie"
           v-for="(movie, index) in popularMovies"
           :key="index">
           <img
-            :src="movie.coverSrc"
+            :src="movie.poster_url"
             class="movieCard__cover" />
-          <div class="movieCard__ratingBar">{{ movie.rating }} %</div>
+          <div class="movieCard__rateBar">{{ Math.round(movie.rate * 10) / 10 }}</div>
           <div class="movieCard__footer">
             <span class="movieCard__name">{{ movie.name }}</span>
             <span class="movieCard__year">({{ movie.year }})</span>
@@ -31,71 +31,70 @@ export default {
   mixins: [api],
   data() {
     return {
-      popularMovies: [
-        {
-          name: 'Pulp Fiction',
-          year: 1994,
-          rating: 83,
-          coverSrc: '',
-        },
-        {
-          name: 'Pulp Fiction',
-          year: 1994,
-          rating: 83,
-          coverSrc: '',
-        },
-        {
-          name: 'Pulp Fiction',
-          year: 1994,
-          rating: 83,
-          coverSrc: '',
-        },
-        {
-          name: 'Pulp Fiction',
-          year: 1994,
-          rating: 83,
-          coverSrc: '',
-        },
-        {
-          name: 'Pulp Fiction',
-          year: 1994,
-          rating: 83,
-          coverSrc: '',
-        },
-      ],
+      popularMovies: [],
     };
   },
-	mounted() {
-		this.getMovies();
-	},
+  mounted() {
+    this.getMovies();
+  },
   methods: {
     async getMovies() {
-			this.popularMovies = await this.apiGet('content/fetch');// .additional.movies;
-			console.log(this.popularMovies);
-		},
+      const response = await this.apiPost('content/fetch');
+      this.popularMovies = response.additional.movies;
+    },
   },
 };
 </script>
 
 <style scoped>
+.subTitle {
+  margin-left: 50px;
+  margin-bottom: 35px;
+}
 .movieCards {
+  padding: 0 32px;
   display: grid;
   grid-template-columns: repeat(5, 194px);
-  grid-template-rows: 340px;
+  grid-auto-rows: auto;
 
-  column-gap: 16px;
+  gap: 16px;
 }
 
 .movieCard {
   display: flex;
   flex-direction: column;
+
+  border-radius: 4px;
 }
 
 .movieCard__cover {
   width: 194px;
-  height: 225px;
-  margin-bottom: 24px;
+  height: 270px;
+  position: relative;
 
   background: #c0c0c0;
+}
+
+.movieCard__year {
+  color: #e1e1e1;
+}
+
+.movieCard__rateBar {
+  width: 56px;
+  height: 20px;
+  position: absolute;
+  bottom: 80px;
+  right: 16px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  color: #292929;
+  background: #85d982;
+}
+
+.movieCard__footer {
+  padding: 12px;
+  background: #1f1f1f;
+  border-radius: 0 0 4px 4px;
 }
 </style>
