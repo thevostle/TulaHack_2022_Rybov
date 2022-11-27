@@ -69,6 +69,21 @@ private:
                 return;
             }
 
+            auto genres = client->execSqlSync("select * from contentGenges where contend_id=?1", movieId);
+
+            for (int i = 0; i < genres.size(); ++i)
+            {
+                auto genreId = genres[i]["genreId"].as<int>();
+
+                if (auto check = client->execSqlSync("select * from userWeights where userId=?1 and genreId=?2", userId, genreId);
+                    check.empty())
+                {
+                    (void)client->execSqlSync("insert into userWeights values(NULL, ?1, ?2, 0)", userId, genreId);
+                }
+
+                (void)client->execSqlSync("update userWeights set `weight`=`weight` + ?1 where userId=?2 and genreId=?3", rate, userId, genreId);
+            }
+
             auto result = client->execSqlSync("insert into userRates values (NULL, ?1, ?2, ?3)", userId, movieId, rate);
             send(JsonResponse::Response(ErrorCode::OK, "User rate added"));
         }
@@ -108,6 +123,11 @@ private:
         
     }
 
+    void getRecommends(const Request &req, Callback &&send, size_t userId, size_t movieId, float rate)
+    {
+        
+    }
+
 public:
     UserRatesController() : HttpController() {}
 
@@ -115,7 +135,7 @@ public:
     UserRatesController(UserRatesController&&)                 = default;
     UserRatesController& operator=(const UserRatesController&) = default;
     UserRatesController& operator=(UserRatesController&&)      = default;
-    ~UserRatesController()                                 = default;
+    ~UserRatesController()                                     = default;
 
     METHOD_LIST_BEGIN
 
@@ -128,9 +148,8 @@ public:
     ADD_METHOD_TO(UserRatesController::updateRate, "/user/{1}/rates/update?movieId={2}&rate={3}", dr::Post, dr::Options,
                   "TimeoutFilter");
 
-    //TODO: delete
-    //ADD_METHOD_TO(UserRatesController::fetch, "/user/{1}/rates/fetch", dr::Post, dr::Options,
-    //              "TimeoutFilter");
+    ADD_METHOD_TO(UserRatesController::getRecommends, "/user/{1}/recommends/get", dr::Post, dr::Options,
+                  "TimeoutFilter");
 
     METHOD_LIST_END
 };
