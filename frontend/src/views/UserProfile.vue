@@ -8,8 +8,13 @@ import Aside from '../components/layout/Aside.vue';
     <Aside />
     <div class="userProfile wrapper">
       <div>
-        Профиль {{ login }}
-        <v-table density="compact">
+        <div class="userProfile__title">Профиль {{ login }}</div>
+        <div class="userProfile__stats">
+          <div class="userProfile__statsItem">
+            <div class="userProfile__statsItemData">Всего просмотрено: {{ getMoviesLenght }}</div>
+          </div>
+        </div>
+        <v-table class="userProfile__table">
           <thead>
             <tr>
               <th class="text-left">Название</th>
@@ -26,8 +31,10 @@ import Aside from '../components/layout/Aside.vue';
               </td>
               <td>
                 <input
+                  class="input__rating"
                   type="text"
                   v-model="item.rating" />
+                
               </td>
               <td>
                 <div
@@ -41,7 +48,8 @@ import Aside from '../components/layout/Aside.vue';
         </v-table>
         <v-btn
           color="secondary"
-          @click="saveMovies">
+          @click="saveMovies"
+          variant="outlined">
           Сохранить
         </v-btn>
       </div>
@@ -114,12 +122,17 @@ export default {
       await this.apiPost(`movies/set/${this.userId}`, this.movies)
     },
   },
+  computed: {
+    getMoviesLenght() {
+      return this.movies.length
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .wrapper {
-  max-width: 120rem;
+  max-width: 80rem;
 }
 
 .deleteMovie {
@@ -127,5 +140,33 @@ export default {
   &:hover {
     color: orange;
   }
+}
+
+.userProfile {
+  margin: 0 auto;
+  padding-top: 3rem;
+}
+
+.userProfile__title {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.userProfile__stats {
+  margin-bottom: 1rem;
+}
+
+.userProfile__statsItem {
+  display: flex;
+}
+
+.userProfile__table {
+  margin-bottom: 2rem;
+}
+
+.input__rating {
+  background-color: rgb(59, 59, 59);
+  text-align: center;
+  width: 3rem;
 }
 </style>
