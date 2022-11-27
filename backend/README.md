@@ -157,7 +157,7 @@ Server response:
 
 ### Add user rate
 ```
-URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+URL: http://ngrok.back.adress.io/user/{1}/rates/add?movieId={2}&rate={3}
 POST: NONE
 ```
 
@@ -172,7 +172,7 @@ Server response:
 
 ### Update user rate
 ```
-URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+URL: http://ngrok.back.adress.io/user/{1}/rates/update?movieId={2}&rate={3}
 POST: NONE
 ```
 
