@@ -67,7 +67,7 @@ export default {
     return {
       userId: 0,
       login: '',
-      allMovies: [],
+      moviesIds: [],
       movies: [
         {
           id: 42,
@@ -128,9 +128,15 @@ export default {
   mounted() {
     this.getUser();
 
-    this.movies = this.apiPost(`/user/${this.userId}/rates/fetch`)
+    this.moviesIds = this.apiPost(`user/${this.userId}/rates/fetch`)
 
-    
+    console.log(this.moviesIds)
+
+    for (let i in this.moviesIds) {
+      
+    }
+
+
 
   },
 };
