@@ -52,12 +52,14 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+}
 .subTitle {
   margin-left: 50px;
-  margin-bottom: 35px;
 }
 .movieCards {
-  padding: 0 32px;
+  padding: 32px;
   display: grid;
   grid-template-columns: repeat(5, 194px);
   grid-auto-rows: auto;
@@ -107,5 +109,10 @@ export default {
 
 .movieCard__name {
   flex-grow: 1;
+  color: #e1e1e1;
+}
+
+.movieCard__name, .movieCard__year {
+  text-decoration: none;
 }
 </style>

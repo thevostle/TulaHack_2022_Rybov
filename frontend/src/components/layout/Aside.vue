@@ -71,16 +71,16 @@
 			</div>
 
 			<div class="pa-2">
-				<v-btn block color="secondary" @click="this.showPopup_chooseGenres = true"> Смотреть </v-btn>
+				<v-btn block color="secondary"> Смотреть </v-btn> <!-- @click="this.showPopup_chooseGenres = true" -->
 			</div>
 		</v-navigation-drawer>
-		<PopupChooseGenres v-if="showPopup_chooseGenres" name="chooseGenres" @close="this.showPopup_chooseGenres = false" />
+		<!-- <PopupChooseGenres v-if="showPopup_chooseGenres" name="chooseGenres" @close="this.showPopup_chooseGenres = false" /> -->
 	</aside>
 </template>
 
 <script>
 import image from '../../assets/images/users/pochita_v_tazike.png';
-import PopupChooseGenres from '../Popups/PopupChooseGenres.vue';
+// import PopupChooseGenres from '../Popups/PopupChooseGenres.vue';
 
 import api from '../../mixins/api.js';
 import cookie from '../../mixins/cookie.js';
@@ -88,7 +88,7 @@ import cookie from '../../mixins/cookie.js';
 export default {
 	name: 'HomeAside',
 	components: {
-		PopupChooseGenres,
+		// PopupChooseGenres,
 	},
 	mixins: [api, cookie],
 	data() {
@@ -105,7 +105,7 @@ export default {
 			userLimit: 4,
 			userLimitAchieved: false,
 
-			showPopup_chooseGenres: false,
+			// showPopup_chooseGenres: false,
 		};
 	},
 	methods: {

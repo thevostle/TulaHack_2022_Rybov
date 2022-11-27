@@ -25,16 +25,15 @@ import Aside from '../components/layout/Aside.vue';
           <tbody>
             <tr
               v-for="item in movies"
-              :key="item.title">
+              :key="item.name">
               <td>
-                <a :href="item.link">{{ item.title }}</a>
+                <a :href="item.link">{{ item.name }}</a>
               </td>
               <td>
                 <input
                   class="input__rating"
                   type="text"
                   v-model="item.rating" />
-                
               </td>
               <td>
                 <div
@@ -46,12 +45,6 @@ import Aside from '../components/layout/Aside.vue';
             </tr>
           </tbody>
         </v-table>
-        <v-btn
-          color="secondary"
-          @click="saveMovies"
-          variant="outlined">
-          Сохранить
-        </v-btn>
       </div>
     </div>
   </div>
@@ -68,38 +61,7 @@ export default {
       userId: 0,
       login: '',
       moviesIds: [],
-      movies: [
-        {
-          id: 42,
-          title: 'Властелин колец',
-          rating: 10,
-          link: '',
-        },
-        {
-          id: 626,
-          title: 'Игра престолов',
-          rating: 10,
-          link: '',
-        },
-        {
-          id: 51,
-          title: 'Атака титанов',
-          rating: 10,
-          link: '',
-        },
-        {
-          id: 95562,
-          title: 'Звездные войны 3',
-          rating: 9,
-          link: '',
-        },
-        {
-          id: 5314,
-          title: 'Токийский гуль',
-          rating: 8,
-          link: '',
-        },
-      ],
+      movies: [],
     };
   },
   methods: {
@@ -108,36 +70,31 @@ export default {
       const userData = await this.apiPost('user/get/by_id', { id: this.userId });
       this.login = userData.additional.login;
     },
-    deleteMovie(id) {
+    async getMovie(id) {
+      const movieData = await this.apiPost('content/get', { id: id });
+      return movieData.additional;
+    },
+    async getMovies() {
+      const moviesData = await this.apiPost(`user/${this.userId}/rates/fetch`);
+      this.movies = moviesData.additional.rates.map(async (movie) => {
+        const fetchedMovie = await this.getMovie(movie.movieId);
+        return ({ ...fetchedMovie, rating: movie.userRate });
+      });
+    },
+    async deleteMovie(id) {
       this.movies = this.movies.filter(function (obj) {
         return obj.id !== id;
       });
-
-      this.saveMovies();
-    },
-    // отправить результат на сервер
-    async saveMovies() {
-      await this.apiPost(`movies/set/${this.userId}`, this.movies)
     },
   },
   computed: {
     getMoviesLenght() {
-      return this.movies.length
-    }
+      return this.movies.length;
+    },
   },
   mounted() {
     this.getUser();
-
-    this.moviesIds = this.apiPost(`user/${this.userId}/rates/fetch`)
-
-    console.log(this.moviesIds)
-
-    for (let i in this.moviesIds) {
-      
-    }
-
-
-
+    this.getMovies();
   },
 };
 </script>
