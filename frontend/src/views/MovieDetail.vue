@@ -1,5 +1,6 @@
 <script setup>
-import api from '../mixins/api';
+import api from '../mixins/api.js';
+import cookie from '../mixins/cookie.js';
 import Aside from '../components/layout/Aside.vue';
 </script>
 
@@ -41,9 +42,11 @@ import Aside from '../components/layout/Aside.vue';
             Оцените фильм:
             <input
               type="text"
-              v-model="userRate" />
+              v-model="userRate"
+							@keypress.enter="rateMovie" />
           </div>
         </v-card-text>
+				<v-btn @click="rateMovie">Оценить</v-btn>
       </v-card>
     </div>
   </div>
@@ -54,7 +57,7 @@ export default {
   components: {
     Aside,
   },
-  mixins: [api],
+  mixins: [api, cookie],
   data() {
     return {
       movieId: -1,
@@ -64,6 +67,7 @@ export default {
       userRate: 0,
       description: '',
       movieLinkToKinopoisk: '',
+			userId: -1,
     };
   },
   methods: {
@@ -84,11 +88,15 @@ export default {
     watchMovie() {
       // запуск стрима
     },
+		async rateMovie() {
+			const rateData = await this.apiPost(`user/${this.userId}/rates/add`, { movieId: this.movieId, rate: this.userRate });
+			console.log(rateData);
+		},
   },
   mounted() {
+		this.userId = this.getCookie('id');
     this.movieId = this.$route.params.movieId;
     this.getMovie();
-    // this.getUser();
   },
 };
 </script>
