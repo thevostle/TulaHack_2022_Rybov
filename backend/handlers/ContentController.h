@@ -62,7 +62,7 @@ public:
 
     METHOD_LIST_BEGIN
 
-    ADD_METHOD_TO(ContentController::fetch, "/content/fetch", dr::Get, dr::Options,
+    ADD_METHOD_TO(ContentController::fetch, "/content/fetch", dr::Post, dr::Options,
                   "TimeoutFilter");
 
     METHOD_LIST_END

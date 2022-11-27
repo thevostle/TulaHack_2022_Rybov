@@ -19,7 +19,7 @@ private:
 
     void accept(const Request &req, Callback &&send)
     {
-        send(JsonResponse::Response(ErrorCode::OK, "Authorized"));
+        send(JsonResponse::Response(ErrorCode::BAD_REQUEST, "DEPRECATED"));
     }
 
     void registerUser(const Request &req, Callback &&send)
@@ -123,7 +123,8 @@ private:
         }
     }
 
-    void getUser(const Request &req, Callback &&send, size_t id)
+    template<typename T>
+    void getByField(const Request &req, Callback &&send, std::string field, T &&value)
     {
         auto client = dr::app().getDbClient("user");
 
@@ -135,17 +136,17 @@ private:
 
         try
         {
-            auto result = client->execSqlSync("select * from users where id=?1;", id);
+            auto result = client->execSqlSync("select * from users where " + field + "=?1;", std::forward<T>(value));
 
             if (result.empty())
             {
-                send(Error::Response(ErrorCode::USER_NOT_FOUND, "User not found: " + std::to_string(id)));
+                send(Error::Response(ErrorCode::USER_NOT_FOUND, "User not found"));
                 return;
             }
 
-            auto login = result[0]["login"].as<std::string>();
             JsonResponse res{ErrorCode::OK, "Returned registered user with given ID"};
-            res.add["id"] = result[0]["id"].as<int>();
+            auto login       = result[0]["login"].template as<std::string>();
+            res.add["id"]    = result[0]["id"].template as<int>();
             res.add["login"] = login;
             send(std::move(res).toResponse());
         }
@@ -153,6 +154,16 @@ private:
         {
             send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
         }
+    }
+
+    void getById(const Request &req, Callback &&send, size_t id)
+    {
+        getByField(req, std::move(send), "id", id);
+    }
+
+    void getByName(const Request &req, Callback &&send, std::string name)
+    {
+        getByField(req, std::move(send), "login", std::move(name));
     }
     
 public:
@@ -165,17 +176,20 @@ public:
 
     METHOD_LIST_BEGIN
 
+    ADD_METHOD_TO(UserController::accept, "/user/is_auth", dr::Post, dr::Options,
+                  "TimeoutFilter", "CheckLoginFilter");
+
     ADD_METHOD_TO(UserController::registerUser, "/user/register", dr::Post, dr::Options,
                   "TimeoutFilter", "CheckLoginVars");
 
     ADD_METHOD_TO(UserController::loginUser, "/user/login", dr::Post, dr::Options,
                   "TimeoutFilter", "CheckLoginVars");
     
-    ADD_METHOD_TO(UserController::getUser, "/user/get?id={1}", dr::Get, dr::Options,
+    ADD_METHOD_TO(UserController::getById, "/user/get/by_id?id={1}", dr::Post, dr::Options,
                   "TimeoutFilter");
 
-    ADD_METHOD_TO(UserController::accept, "/user/is_auth", dr::Get, dr::Options,
-                  "TimeoutFilter", "CheckLoginFilter");
+    ADD_METHOD_TO(UserController::getByName, "/user/get/by_name?name={1}", dr::Post, dr::Options,
+                  "TimeoutFilter");
 
     METHOD_LIST_END
 };

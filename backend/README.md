@@ -36,8 +36,14 @@ POST: string login, integer password
 
 ### Get user by ID
 ```
-URL: http://ngrok.back.adress.io/user/get?id={1}
-GET: string id
+URL: http://ngrok.back.adress.io/user/get/by_id?id={1}
+POST: NONE
+```
+
+### Get user by name (login)
+```
+URL: http://ngrok.back.adress.io/user/get/by_name?name={1}
+POST: NONE
 ```
 
 Server response:
@@ -56,7 +62,7 @@ Server response:
 ### Fetch all movies
 ```
 URL: http://ngrok.back.adress.io/content/fetch
-GET: NONE
+POST: NONE
 ```
 
 Server response:
