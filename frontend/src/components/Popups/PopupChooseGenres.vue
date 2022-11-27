@@ -21,36 +21,35 @@ import Popup from './Popup.vue';
 </template>
 
 <script>
+import api from '../../mixins/api';
 export default {
   components: {
     Popup,
   },
+  mixins: [api],
+  props: {
+    usersId: {
+      type: Array,
+    }
+  },
   data() {
     return {
-      types: [
-        {
-          title: 'Веселый',
-          id: 0,
-        },
-        {
-          title: 'Грустный',
-          id: 1,
-        },
-        {
-          title: 'Романтичный',
-          id: 2,
-        },
-        {
-          title: 'Захватывающий',
-          id: 3,
-        },
-      ],
+      types: [],
     };
   },
   methods: {
-    // функция отправляет на сервер id пользователей из группы и айди настроения фильма
-    watchFilm(id) {},
+    // функция отправляет на сервер id пользователей из группы и айди жанра фильма
+    watchFilm(id) {
+      this.apiPost(``)
+    },
+
+    async getGenres() {
+      return this.apiPost(``)
+    }
   },
+  mounted() {
+    this.types = this.getGenres()
+  }
 };
 </script>
 
