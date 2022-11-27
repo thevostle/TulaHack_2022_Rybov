@@ -3,6 +3,7 @@
 #include "Error.h"
 
 #include <drogon/HttpController.h>
+#include <json/value.h>
 #include <string>
 
 namespace dr = drogon;
@@ -49,6 +50,64 @@ private:
         
     }
 
+    void addRate(const Request &req, Callback &&send, size_t userId, size_t movieId, float rate)
+    {
+        auto client = dr::app().getDbClient("user");
+
+        if (!client)
+        {
+            send(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
+            return;
+        }
+
+        try
+        {
+            if (auto select = client->execSqlSync("select * from userRates where userId=?1 and contentId=?2", userId, movieId);
+                !select.empty())
+            {
+                send(Error::Response(ErrorCode::NO_MODIFY, "User already rated this movie. Use update request from API"));
+                return;
+            }
+
+            auto result = client->execSqlSync("insert into userRates values (NULL, ?1, ?2, ?3)", userId, movieId, rate);
+            send(JsonResponse::Response(ErrorCode::OK, "User rate added"));
+        }
+        catch (const orm::DrogonDbException &e)
+        {
+            send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
+        }
+        
+    }
+
+    void updateRate(const Request &req, Callback &&send, size_t userId, size_t movieId, float rate)
+    {
+        auto client = dr::app().getDbClient("user");
+
+        if (!client)
+        {
+            send(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
+            return;
+        }
+
+        try
+        {
+            auto result = client->execSqlSync("update userRates set (userId=?1, contentId=?2, rate=?3) where userId=?1 and contentId=?2", userId, movieId, rate);
+
+            if (result.affectedRows() < 1)
+            {
+                send(Error::Response(ErrorCode::NO_MODIFY, "No user rates were found or updated"));
+                return;
+            }
+
+            send(JsonResponse::Response(ErrorCode::OK, "User rate updated"));
+        }
+        catch (const orm::DrogonDbException &e)
+        {
+            send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
+        }
+        
+    }
+
 public:
     UserRatesController() : HttpController() {}
 
@@ -62,6 +121,16 @@ public:
 
     ADD_METHOD_TO(UserRatesController::fetch, "/user/{1}/rates/fetch", dr::Post, dr::Options,
                   "TimeoutFilter");
+
+    ADD_METHOD_TO(UserRatesController::addRate, "/user/{1}/rates/add?movieId={2}&rate={3}", dr::Post, dr::Options,
+                  "TimeoutFilter");
+
+    ADD_METHOD_TO(UserRatesController::updateRate, "/user/{1}/rates/update?movieId={2}&rate={3}", dr::Post, dr::Options,
+                  "TimeoutFilter");
+
+    //TODO: delete
+    //ADD_METHOD_TO(UserRatesController::fetch, "/user/{1}/rates/fetch", dr::Post, dr::Options,
+    //              "TimeoutFilter");
 
     METHOD_LIST_END
 };
