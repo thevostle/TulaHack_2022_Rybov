@@ -52,7 +52,7 @@ export default {
       };
 
       try {
-        const response = await fetch(`${this.apiUrl}${action}`, options);
+        const response = await fetch(`${this.apiUrl}${action}?${payload}`, options);
 
         if (response.ok) {
           const data = await response.json();

@@ -2,7 +2,7 @@
 
 Наш способ - открытие на локальной машине портов `:5173` и `:8080` при помощи `ngrok`.
 Порт `5173` используется для обращения к фронтенду на Vite, а `:8080` для передачи HTTP-запросов на бэк.
-В таком случае доменом сайта будет адрес ngrok, выданный на порт `5173`, а с фронтэнда запросы будут передаваться
+В таком случае доменом сайта будет адрес, выданный ngrok на порт `5173`, а с фронтэнда запросы будут передаваться
 на домен, выданный на порт `8080`.
 
 ## API
@@ -75,8 +75,33 @@ Server response:
             {
                 "id": 0,
                 "name": "name",
-                "rate": 0,
-                "poster_url": "url"
+                "rate": 0.000,
+                "poster_url": "url",
+                "year": 0
+            },
+        ]
+    }
+}
+```
+
+## User Rates Controller
+
+### Fetch all movies, rated by user
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {
+        "ratedMovies": [
+            {
+                "movieId": 0,
+                "userRate": 0.000,
             },
         ]
     }

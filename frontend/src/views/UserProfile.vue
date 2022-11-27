@@ -101,14 +101,14 @@ export default {
       ],
     };
   },
-  updated() {
+  mounted() {
     this.getUser();
   },
   methods: {
     async getUser() {
       this.userId = this.$route.params.userId;
-      const userData = await this.apiGet('user/get', { id: this.userId });
-      this.login = this.userId; // userData.login
+      const userData = await this.apiPost('user/get/by_id', { id: this.userId });
+      this.login = userData.additional.login;
     },
     deleteMovie(id) {
       this.movies = this.movies.filter(function (obj) {
