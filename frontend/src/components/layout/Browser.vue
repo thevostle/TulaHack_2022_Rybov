@@ -16,7 +16,8 @@ import api from '../../mixins/api.js';
             class="movieCard__cover" />
           <div class="movieCard__rateBar">{{ Math.round(movie.rate * 10) / 10 }}</div>
           <div class="movieCard__footer">
-            <span class="movieCard__name">{{ movie.name }}</span>
+            <span class="movieCard__name">{{ movie.name.length > 16 ? `${movie.name.slice(0, 16)}...` : movie.name }}</span>
+            &nbsp;
             <span class="movieCard__year">({{ movie.year }})</span>
           </div>
         </div>
@@ -71,6 +72,7 @@ export default {
   width: 194px;
   height: 270px;
   position: relative;
+  border-radius: 4px 4px 0 0;
 
   background: #c0c0c0;
 }
@@ -83,8 +85,8 @@ export default {
   width: 56px;
   height: 20px;
   position: absolute;
-  bottom: 80px;
-  right: 16px;
+  bottom: 56px;
+  right: 8px;
   border-radius: 4px;
   text-align: center;
   font-size: 14px;
@@ -93,8 +95,13 @@ export default {
 }
 
 .movieCard__footer {
+  display: flex;
   padding: 12px;
   background: #1f1f1f;
   border-radius: 0 0 4px 4px;
+}
+
+.movieCard__name {
+  flex-grow: 1;
 }
 </style>
