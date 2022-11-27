@@ -16,19 +16,6 @@ import api from './mixins/api.js';
 <script>
 export default {
   mixins: [api],
-  async mounted() {
-    console.log(this.$route.fullPath);
-    // const isAuthorized = await this.apiGet('user/is_auth');
-    // console.log('isAuthorized', isAuthorized);
-
-    // if ((isAuthorized === true && this.$route.fullPath !== '/auth') || true) {
-    //   // console.log('Authorized');
-    // } else {
-    //   // console.log('Unauthorized');
-    //   this.$router.push('/auth');
-    // }
-  },
-  beforeRouteUpdate() {},
 };
 </script>
 
