@@ -73,11 +73,15 @@
 <script>
 import image from '../../assets/images/users/pochita_v_tazike.png';
 import PopupChooseGenres from '../Popups/PopupChooseGenres.vue'
+
+import cookie from '../../mixins/cookie.js';
+
 export default {
 	name: 'HomeAside',
 	components: {
 		PopupChooseGenres
 	},
+	mixins: [cookie],
 	data() {
 		return {
 			username: 'thevostle',
@@ -132,6 +136,7 @@ export default {
 	},
 	mounted() {
 		this.userGroup.push({ name: this.username });
+		this.userId = this.getCookie('id')
 
 		//дебаг
 		//this.userGroup.push({name: 'mounted: test1'})
