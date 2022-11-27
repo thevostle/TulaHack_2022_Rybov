@@ -108,4 +108,32 @@ Server response:
 }
 ```
 
-TODO: Добавить по add & update
+### Add user rate
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
+}
+```
+
+### Update user rate
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
+}
+```
