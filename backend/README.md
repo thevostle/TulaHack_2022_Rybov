@@ -88,6 +88,29 @@ Server response:
 }
 ```
 
+### Fetch all genres
+```
+URL: http://ngrok.back.adress.io/genres/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "additional": {
+        "genres": [
+            {
+                "id": 1,
+                "name": "Horror",
+                "rus_name": "Ужасы"
+            },
+        ]
+    },
+    "message": "Genres fetched",
+    "rybCode": 0
+}
+```
+
 ### Get movie by id
 ```
 URL: http://ngrok.back.adress.io/content/get?id={1}
