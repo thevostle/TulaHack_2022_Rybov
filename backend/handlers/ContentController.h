@@ -40,6 +40,7 @@ private:
                 movie["name"]       = row["name"]      .as<std::string>();
                 movie["rate"]       = row["rate"]      .as<float>();
                 movie["poster_url"] = row["poster_url"].as<std::string>();
+                movie["year"]       = row["year"].as<int>();
                 movies.append(std::move(movie));
             }
 
