@@ -1,8 +1,8 @@
 export default {
   data() {
     return {
-			apiUrl: 'https://92f6-94-28-235-94.eu.ngrok.io/',
-		};
+      apiUrl: 'https://3415-94-28-235-94.eu.ngrok.io/',
+    };
   },
   methods: {
     async apiPost(action, data) {
@@ -18,8 +18,7 @@ export default {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
-          'Access-Control-Request-Private-Network': false
+          'Access-Control-Allow-Headers': '*'
         },
         body: payload,
       };

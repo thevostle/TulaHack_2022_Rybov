@@ -77,10 +77,34 @@ Server response:
                 "name": "name",
                 "rate": 0.000,
                 "poster_url": "url",
-                "year": 0
+                "year": 0,
+                "genresIds": [
+                    0,
+                    1,
+                ]
             },
         ]
     }
+}
+```
+
+### Get movie by id
+```
+URL: http://ngrok.back.adress.io/content/get?id={1}
+POST: integer id
+```
+
+Server response:
+```json
+{
+    "additional": {
+        "name": "Морской бой",
+        "poster_url": "https://lf21.lordfilm.lu/uploads/posts/2020-06/466844_1593289203.jpg",
+        "rate": 10,
+        "year": 2012
+    },
+    "message": "Movie fetched",
+    "rybCode": 0
 }
 ```
 
@@ -105,5 +129,35 @@ Server response:
             },
         ]
     }
+}
+```
+
+### Add user rate
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
+}
+```
+
+### Update user rate
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {}
 }
 ```

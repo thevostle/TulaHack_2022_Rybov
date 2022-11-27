@@ -26,16 +26,23 @@ enum ErrorCode
     UNREGISTERED_USER = 8,
     WRONG_PASSWORD = 9,
     USER_NOT_FOUND = 10,
+    NO_MODIFY = 12,
 };
 
 struct BaseResponse
 {
+    ErrorCode rybCode;
+
+    BaseResponse(ErrorCode code) : rybCode(code) {}
+
     virtual dr::HttpResponsePtr toResponse() const & = 0;
     virtual dr::HttpResponsePtr toResponse() && = 0;
 };
 
 struct JsonResponse : public BaseResponse
 {
+    using Base = BaseResponse;
+
     static dr::HttpResponsePtr Response(ErrorCode rybCode, std::string msg, Json::Value add = Json::objectValue)
     {
         JsonResponse res{ rybCode, std::move(msg), std::move(add) };
@@ -43,10 +50,10 @@ struct JsonResponse : public BaseResponse
     }
 
     JsonResponse()
-        : message{}, rybCode(ErrorCode::OK), add{Json::objectValue} {}
+        : Base{ErrorCode::OK}, message{}, add{Json::objectValue} {}
 
     JsonResponse(ErrorCode _rybCode, std::string _message, Json::Value _add = {})
-        : message{std::move(_message)}, rybCode(_rybCode), add(std::move(_add)) {}
+        : Base{_rybCode}, message{std::move(_message)}, add(std::move(_add)) {}
 
     JsonResponse(const JsonResponse&)            = default;
     JsonResponse(JsonResponse&&)                 = default;
@@ -92,8 +99,6 @@ struct JsonResponse : public BaseResponse
 
     Json::Value add;
     std::string message;
-    ErrorCode rybCode;
-
 };
 
 namespace tags
@@ -117,7 +122,7 @@ public:
     }
 
     RedirectResponse(std::string_view _url)
-        : url(_url) {}
+        : BaseResponse{ErrorCode::OK}, url(_url) {}
 
     RedirectResponse(const RedirectResponse&)            = default;
     RedirectResponse(RedirectResponse&&)                 = default;
