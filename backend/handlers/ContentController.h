@@ -92,6 +92,41 @@ private:
         }
     }
 
+    void fetchGenres(const Request &req, Callback &&send)
+    {
+        auto client = dr::app().getDbClient("user");
+
+        if (!client)
+        {
+            send(Error::Response(ErrorCode::DB_CLIENT_ERROR, "No client found"));
+            return;
+        }
+
+        try
+        {
+            auto result = client->execSqlSync("select * from genres");
+
+            JsonResponse res{ErrorCode::OK, "Genres fetched"};
+            res.add["genres"] = Json::arrayValue;
+            auto &genres = res.add["genres"];
+
+            for (auto row : result)
+            {
+                auto genre = Json::Value{ Json::objectValue };
+                genre["id"]         = row["id"]      .as<int>();
+                genre["name"]       = row["name"]    .as<std::string>();
+                genre["rus_name"]   = row["rus_name"].as<std::string>();
+                genres.append(std::move(genre));
+            }
+
+            send(std::move(res).toResponse());
+        }
+        catch (const orm::DrogonDbException &e)
+        {
+            send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
+        }
+    }
+
 public:
     ContentController() : HttpController() {}
 
@@ -107,6 +142,9 @@ public:
                   "TimeoutFilter");
 
     ADD_METHOD_TO(ContentController::get, "/content/get?id={1}", dr::Post, dr::Options,
+                  "TimeoutFilter");
+
+    ADD_METHOD_TO(ContentController::fetchGenres, "/genres/fetch", dr::Post, dr::Options,
                   "TimeoutFilter");
 
     METHOD_LIST_END
