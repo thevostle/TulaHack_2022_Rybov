@@ -67,6 +67,7 @@ export default {
     return {
       userId: 0,
       login: '',
+      allMovies: [],
       movies: [
         {
           id: 42,
@@ -101,9 +102,6 @@ export default {
       ],
     };
   },
-  mounted() {
-    this.getUser();
-  },
   methods: {
     async getUser() {
       this.userId = this.$route.params.userId;
@@ -121,12 +119,26 @@ export default {
     async saveMovies() {
       await this.apiPost(`movies/set/${this.userId}`, this.movies)
     },
+    // взять вообще все фильмы
+    async getMovies() {
+      const response = await this.apiPost('content/fetch');
+      this.allMovies = response.additional.movies;
+    },
   },
   computed: {
     getMoviesLenght() {
       return this.movies.length
     }
-  }
+  },
+  mounted() {
+    this.getUser();
+
+    this.getMovies()
+    this.movies = this.apiGet(`/user/${this.userId}/rates/fetch`)
+
+    
+
+  },
 };
 </script>
 

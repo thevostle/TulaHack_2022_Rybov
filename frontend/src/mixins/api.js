@@ -1,8 +1,8 @@
 export default {
   data() {
     return {
-      apiUrl: 'https://92f6-94-28-235-94.eu.ngrok.io/',
-    };
+			apiUrl: 'https://92f6-94-28-235-94.eu.ngrok.io/',
+		};
   },
   methods: {
     async apiPost(action, data) {
