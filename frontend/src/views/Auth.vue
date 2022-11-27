@@ -104,12 +104,6 @@ export default {
     },
     async auth() {
       const authData = await this.apiPost(this.isLogin ? 'user/login' : 'user/register', { login: this.login, password: this.password });
-      console.log(authData);
-
-      // setTimeout(async () => {
-      //   const isAuthorized = await this.apiGet('user/is_auth');
-      //   console.log('isAuthorized', isAuthorized);
-      // }, 2000);
 
       if (authData.rybCode === 0) {
 				document.cookie=`id=${authData.additional.id};max-age=${60*60*24}` 

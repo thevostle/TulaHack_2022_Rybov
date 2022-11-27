@@ -76,7 +76,6 @@ export default {
       const movieData = await this.apiPost('content/get', { id: this.movieId });
       for (const prop in movieData.additional) {
         this[prop] = movieData.additional[prop];
-        console.log(prop, movieData.additional[prop]);
       }
     },
     nextMovie() {
