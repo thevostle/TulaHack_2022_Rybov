@@ -9,6 +9,7 @@ set(FILTER_FILES    CheckLoginFilter.h
 
 set(HANDLER_FILES   UserController.h
                     ContentController.h
+                    RatesController.h
                     #UserController.cpp
                     RedirectController.h
                     RedirectController.cpp

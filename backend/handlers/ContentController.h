@@ -50,8 +50,8 @@ private:
         {
             send(Error::Response(ErrorCode::SQL_ERROR, "Exception while accesing to database: " + std::string{e.base().what()}));
         }
-        
     }
+
 public:
     ContentController() : HttpController() {}
 

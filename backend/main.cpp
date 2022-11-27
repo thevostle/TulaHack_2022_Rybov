@@ -4,6 +4,7 @@
 #include "TimeoutFilter.h"
 #include "CheckLoginFilter.h"
 
+#include "RatesController.h"
 #include "ContentController.h"
 #include "UserController.h"
 #include "RedirectController.h"

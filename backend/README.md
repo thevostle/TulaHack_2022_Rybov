@@ -83,3 +83,27 @@ Server response:
     }
 }
 ```
+
+## User Rates Controller
+
+### Fetch all movies, rated by user
+```
+URL: http://ngrok.back.adress.io/user/{userId}/rates/fetch
+POST: NONE
+```
+
+Server response:
+```json
+{
+    "rybCode": 0,
+    "message": "message",
+    "additional": {
+        "ratedMovies": [
+            {
+                "movieId": 0,
+                "userRate": 0.000,
+            },
+        ]
+    }
+}
+```
